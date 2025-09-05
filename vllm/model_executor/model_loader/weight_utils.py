@@ -18,7 +18,7 @@ import huggingface_hub.constants
 import numpy as np
 import torch
 from huggingface_hub import HfFileSystem, hf_hub_download, snapshot_download
-from safetensors.torch import load_file, safe_open, save_file
+from safetensors.torch import load, load_file, safe_open, save_file
 from tqdm.auto import tqdm
 
 from vllm.config import LoadConfig, ModelConfig
@@ -483,9 +483,9 @@ def safetensors_weights_iterator(
             disable=not enable_tqdm(use_tqdm_on_load),
             bar_format=_BAR_FORMAT,
     ):
-        with safe_open(st_file, framework="pt") as f:
-            for name in f.keys():  # noqa: SIM118
-                param = f.get_tensor(name)
+        print("Shiqi model load")
+        with open(st_file, "rb") as f:
+            for name, param in load(f.read()).items():
                 yield name, param
 
 
